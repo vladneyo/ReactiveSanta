@@ -2,7 +2,7 @@
 var mainState = {
 
     preload: function () {
-        game.load.image('santa', 'assets/santa.png');
+        game.load.image('santa', 'assets/santa2.png');
         game.load.image('gift', 'assets/gift.png');
         game.load.image('house', 'assets/house.png');
         game.load.image('cloud', 'assets/cloud.png');
@@ -144,7 +144,7 @@ var mainState = {
     },
     addHouse: function () {
 
-        var house = game.add.sprite((1000 + Math.floor(Math.random() * 600)), 500, 'house');
+        var house = game.add.sprite((1000 + Math.floor(Math.random() * 700 / (this.level - 1))), 500, 'house');
         this.houses.add(house);
         house.scale.x = 0.35;
         house.scale.y = 0.35;
@@ -161,7 +161,7 @@ var mainState = {
 
     addCloud: function () {
 
-        var cloud = game.add.sprite((1000 + Math.floor(Math.random() * 300 * this.level)), 50 + (120 * Math.floor(Math.random() * 3)), 'cloud');
+        var cloud = game.add.sprite((1000 + Math.floor(Math.random() * 400 / (this.level - 1))), 50 + (120 * Math.floor(Math.random() * 3)), 'cloud');
         this.clouds.add(cloud);
         cloud.scale.x = 0.15;
         cloud.scale.y = 0.15;
@@ -170,7 +170,7 @@ var mainState = {
         game.physics.arcade.enable(cloud);
 
         // Add velocity to the pipe to make it move left
-        cloud.body.velocity.x = (-400 - Math.floor(Math.random()*200))* this.level;
+        cloud.body.velocity.x = (-500 - Math.floor(Math.random()*200))* this.level;
         cloud.body.gravity.y = 0;
 
         cloud.checkWorldBounds = true;
