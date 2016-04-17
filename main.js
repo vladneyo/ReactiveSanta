@@ -17,7 +17,7 @@ var mainState = {
     create: function () {
         // This function is called after the preload function
         // Here we set up the game, display sprites, etc.
-        game.stage.backgroundColor = '#38699e';
+        game.stage.backgroundColor = '#2c3e6b';
         this.level = 2;
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -110,7 +110,6 @@ var mainState = {
 
     },
     restartGame: function () {
-        // Start the 'main' state, which restarts the game
         game.state.start('main');
     },
     moveUp: function () {
@@ -179,7 +178,7 @@ var mainState = {
 };
 
 // Initialize Phaser, and create a 400px by 490px game
-var game = new Phaser.Game(1000, 600);
+var game = new Phaser.Game(1000, 600,Phaser.AUTO, 'canvas');
 
 // Add and start the 'main' state to start the game
 game.state.add('main', mainState, true);

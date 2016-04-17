@@ -6,13 +6,64 @@
     <script type="text/javascript" src="phaser.min.js"></script>
     <script type="text/javascript" src="main.js"></script>
     <style>
-        canvas{
-            margin:0 auto;
+        #containter{
+            margin: 0 auto;
+            width: 1200px;
+            height: 600px;
+        }
+        ul{
+            height: 600px;
+            list-style: none;
+            color: #ffffff;
+            font-family: 'Century Gothic';
+            margin: 100% 0 0 10px;
+            padding: 0;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+        #leftpanel{
+            display: inline-block;
+            width:100px;
+            height: 600px;
+            background-color: #2c3e6b;
+            margin: 0;
+            padding: 0;
+            float: left;
+        }
+        #rightpanel{
+            display: inline-block;
+            width:100px;
+            height: 600px;
+            background-color: #2c3e6b;
+            margin: 0;
+            padding: 0;
+            float: right;
+        }
+        #canvas{
+            display: inline-block;
+            width:1000px;
+            height: 600px;
+            margin: 0;
+
         }
     </style>
 </head>
-
 <body>
+    <div id="containter">
+        <div id="leftpanel">
+            <ul>
+                <li>UP - w,↑</li>
+                <li>UP - s,↓</li>
+                <li>DROP - space,Num0</li>
+
+            </ul>
+        </div>
+        <div id="canvas">
+        </div>
+        <div id="rightpanel">
+
+        </div>
+    </div>
 
 </body>
 </html>
