@@ -7,6 +7,11 @@ var mainState = {
         game.load.image('house', 'assets/house.png');
         game.load.image('cloud', 'assets/cloud.png');
 
+        game.load.audio('dropped', 'assets/dropped.mp3');
+        game.load.audio('delivered', 'assets/delivered.mp3');
+        game.load.audio('crash', 'assets/crash.mp3');
+        game.load.audio('santamove', 'assets/santamove.mp3');
+
     },
 
     create: function () {
@@ -68,12 +73,17 @@ var mainState = {
         this.labelTime = game.add.text(20, 10, "time : 0",
             { font: "30px Arial", fill: "#ffffff" });
 
+        //add soundss
+        this.dropped = game.add.audio('dropped');
+        this.delivered = game.add.audio('delivered');
+        this.crash = game.add.audio('crash');
+        this.santamove = game.add.audio('santamove');
     },
     update: function () {
         //if gift dropped down and hitted on the house
         game.physics.arcade.overlap(this.gifts, this.houses, this.increaseScore, null, this);
         //if santa crash with cloud
-        game.physics.arcade.overlap(this.santa, this.clouds, this.restartGame, null, this);
+        game.physics.arcade.overlap(this.santa, this.clouds, this.clash, null, this);
 
     },
     
@@ -81,6 +91,9 @@ var mainState = {
         //console.log(this.gifts);
         for (var i = 0; i < this.gifts.children.length; i++)
             this.gifts.remove(this.gifts.children[i]);
+
+        this.delivered.play();
+
         this.score++;
         this.labelScore.text = "score : " + this.score;
     },
@@ -91,19 +104,30 @@ var mainState = {
     increaseLevel: function () {
         this.level += 0.1;
     },
+    clash: function() {
+        this.crash.play();
+        this.restartGame();
+
+    },
     restartGame: function () {
         // Start the 'main' state, which restarts the game
         game.state.start('main');
     },
     moveUp: function () {
         // fly up
-        if (this.santa.y > 50)
+        if (this.santa.y > 50){
+            this.santamove.play();
             this.santa.y -= 120;
+        }
+
     },
     moveDown: function () {
         // fly down
-        if (this.santa.y < 290)
+        if (this.santa.y < 290){
+            this.santamove.play();
             this.santa.y += 120;
+        }
+
     },
     dropGift: function () {
         //drop the gift
@@ -112,6 +136,8 @@ var mainState = {
         game.physics.arcade.enable(gift);
         gift.scale.x = 0.1;
         gift.scale.y = 0.1;
+
+        this.dropped.play();
 
         gift.body.gravity.y = 2000 * this.level;
         gift.checkWorldBounds = true;
@@ -145,7 +171,7 @@ var mainState = {
         game.physics.arcade.enable(cloud);
 
         // Add velocity to the pipe to make it move left
-        cloud.body.velocity.x = -400 * this.level;
+        cloud.body.velocity.x = (-400 - Math.floor(Math.random()*200))* this.level;
         cloud.body.gravity.y = 0;
 
         cloud.checkWorldBounds = true;
