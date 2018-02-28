@@ -8,40 +8,20 @@ export class ReactiveSantaRaceState extends GameState {
     constructor(game) {
         super();
         this._game = game;
+        this._santa = {};
     }
 
     preload() {
-        loadMedia(this._game);
+        loadMedia.call(this);
     }
 
     create() {
-        //add groups for interaction
-        this._houses = this._game.add.group();
-        this._clouds = this._game.add.group();
-        this._gifts = this._game.add.group();
-        setupStage(this._game);
-        this._santa = setupSanta(this._game);
-        setupControls.call(this, this._game);
-        setupAudio.call(this, this._game);
-
-        this._level = 2;
-        //random adding houses
-        this._timer = this._game.time.events.loop(1500 / this._level, this._addHouse, this);
-        //random adding clouds
-        this._timer = this._game.time.events.loop(1500 / this._level * 2, this._addCloud, this);
-        //constantly increase level
-        this._timer = this._game.time.events.loop(1500, this._increaseLevel, this);
-        //constantly increase time
-        this._timer = this._game.time.events.loop(1000, this._increaseTime, this);
-
-        //default score
-        this._score = 0;
-        this._labelScore = this._game.add.text(420, 10, "score : 0",
-            { font: "30px Arial", fill: "#ffffff" });
-        //default time
-        this._time = 0;
-        this._labelTime = this._game.add.text(20, 10, "time : 0",
-            { font: "30px Arial", fill: "#ffffff" });
+        setupGroups.call(this);
+        setupControls.call(this);
+        setupAudio.call(this);
+        setupStage.call(this);
+        setupSanta.call(this);
+        this._reset();
     }
 
     update() {
@@ -49,6 +29,10 @@ export class ReactiveSantaRaceState extends GameState {
         this._game.physics.arcade.overlap(this._gifts, this._houses, this._increaseScore, null, this);
         //if santa crash with cloud
         this._game.physics.arcade.overlap(this._santa, this._clouds, this._clash, null, this);
+    }
+
+    restartGame() {
+        this._game.state.start(StateConstants.MainState.name);
     }
 
     _moveUp() {
@@ -108,10 +92,6 @@ export class ReactiveSantaRaceState extends GameState {
 
     }
 
-    restartGame() {
-        this._game.state.start(StateConstants.MainState.name);
-    }
-
     _addHouse() {
 
         var house = this._game.add.sprite((1000 + Math.floor(Math.random() * 700 / (this._level - 1))), 500, 'house');
@@ -145,57 +125,87 @@ export class ReactiveSantaRaceState extends GameState {
 
         cloud.checkWorldBounds = true;
     }
+
+    _reset() {
+        this._level = 2;
+        //random adding houses
+        this._timer = this._game.time.events.loop(1500 / this._level, this._addHouse, this);
+        //random adding clouds
+        this._timer = this._game.time.events.loop(1500 / this._level * 2, this._addCloud, this);
+        //constantly increase level
+        this._timer = this._game.time.events.loop(1500, this._increaseLevel, this);
+        //constantly increase time
+        this._timer = this._game.time.events.loop(1000, this._increaseTime, this);
+
+        //default score
+        this._score = 0;
+        this._labelScore = this._game.add.text(420, 10, "score : 0",
+            { font: "30px Arial", fill: "#ffffff" });
+        //default time
+        this._time = 0;
+        this._labelTime = this._game.add.text(20, 10, "time : 0",
+            { font: "30px Arial", fill: "#ffffff" });
+    }
 }
 
-function loadMedia(game) {
-    game.load.image(AssetsConstants.santaImg.name, `${MediaConstants.assetsRoute}/${AssetsConstants.santaImg.file}`);
-    game.load.image(AssetsConstants.giftImg.name, `${MediaConstants.assetsRoute}/${AssetsConstants.giftImg.file}`);
-    game.load.image(AssetsConstants.houseImg.name, `${MediaConstants.assetsRoute}/${AssetsConstants.houseImg.file}`);
-    game.load.image(AssetsConstants.cloudImg.name, `${MediaConstants.assetsRoute}/${AssetsConstants.cloudImg.file}`);
+function loadMedia() {
+    this._game.load.image(AssetsConstants.santaImg.name, `${MediaConstants.assetsRoute}/${AssetsConstants.santaImg.file}`);
+    this._game.load.image(AssetsConstants.giftImg.name, `${MediaConstants.assetsRoute}/${AssetsConstants.giftImg.file}`);
+    this._game.load.image(AssetsConstants.houseImg.name, `${MediaConstants.assetsRoute}/${AssetsConstants.houseImg.file}`);
+    this._game.load.image(AssetsConstants.cloudImg.name, `${MediaConstants.assetsRoute}/${AssetsConstants.cloudImg.file}`);
 
-    game.load.audio(AssetsConstants.droppedSnd.name, `${MediaConstants.assetsRoute}/${AssetsConstants.droppedSnd.file}`);
-    game.load.audio(AssetsConstants.deliveredSnd.name, `${MediaConstants.assetsRoute}/${AssetsConstants.deliveredSnd.file}`);
-    game.load.audio(AssetsConstants.crashSnd.name, `${MediaConstants.assetsRoute}/${AssetsConstants.crashSnd.file}`);
-    game.load.audio(AssetsConstants.santaMoveSnd.name, `${MediaConstants.assetsRoute}/${AssetsConstants.santaMoveSnd.file}`);
+    this._game.load.audio(AssetsConstants.droppedSnd.name, `${MediaConstants.assetsRoute}/${AssetsConstants.droppedSnd.file}`);
+    this._game.load.audio(AssetsConstants.deliveredSnd.name, `${MediaConstants.assetsRoute}/${AssetsConstants.deliveredSnd.file}`);
+    this._game.load.audio(AssetsConstants.crashSnd.name, `${MediaConstants.assetsRoute}/${AssetsConstants.crashSnd.file}`);
+    this._game.load.audio(AssetsConstants.santaMoveSnd.name, `${MediaConstants.assetsRoute}/${AssetsConstants.santaMoveSnd.file}`);
 }
 
-function setupStage(game) {
-    game.stage.backgroundColor = ColorConstants.nightSky;
-    game.physics.startSystem(Phaser.Physics.ARCADE);
+function setupStage() {
+    this._game.stage.backgroundColor = ColorConstants.nightSky;
+    this._game.physics.startSystem(Phaser.Physics.ARCADE);
 }
 
-function setupSanta(game) {
-    const santa = game.add.sprite(150, 50, AssetsConstants.santaImg.name);
+function setupSanta() {
+    const s = this._game.add.sprite(150, 50, AssetsConstants.santaImg.name);
+    
+    s.scale.x = 0.15;
+    s.scale.y = 0.15;
 
-    santa.scale.x = 0.15;
-    santa.scale.y = 0.15;
+    this._game.physics.arcade.enable(s);
 
-    game.physics.arcade.enable(santa);
-    return santa;
+    Object.assign(this._santa, s);
+    this._santa.__proto__ = Object.create(s);
 }
 
-function setupControls(game) {
+function setupGroups() {
+    //add groups for interaction
+    this._houses = this._game.add.group();
+    this._clouds = this._game.add.group();
+    this._gifts = this._game.add.group();
+}
+
+function setupControls() {
     //main keys
-    const wKey = game.input.keyboard.addKey(Phaser.KeyCode.W);
+    const wKey = this._game.input.keyboard.addKey(Phaser.KeyCode.W);
     wKey.onDown.add(this._moveUp, this);
-    const sKey = game.input.keyboard.addKey(Phaser.KeyCode.S);
+    const sKey = this._game.input.keyboard.addKey(Phaser.KeyCode.S);
     sKey.onDown.add(this._moveDown, this);
-    const spaceKey = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+    const spaceKey = this._game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
     spaceKey.onDown.add(this._dropGift, this);
 
     //alternative keys
-    const upKey = game.input.keyboard.addKey(Phaser.KeyCode.UP);
+    const upKey = this._game.input.keyboard.addKey(Phaser.KeyCode.UP);
     upKey.onDown.add(this._moveUp, this);
-    const downKey = game.input.keyboard.addKey(Phaser.KeyCode.DOWN);
+    const downKey = this._game.input.keyboard.addKey(Phaser.KeyCode.DOWN);
     downKey.onDown.add(this._moveDown, this);
-    const zeroNumKey = game.input.keyboard.addKey(Phaser.KeyCode.NUMPAD_0);
+    const zeroNumKey = this._game.input.keyboard.addKey(Phaser.KeyCode.NUMPAD_0);
     zeroNumKey.onDown.add(this._dropGift, this);
 }
 
-function setupAudio(game) {
+function setupAudio() {
     //add soundss
-    this._dropped = game.add.audio(AssetsConstants.droppedSnd.name);
-    this._delivered = game.add.audio(AssetsConstants.deliveredSnd.name);
-    this._crash = game.add.audio(AssetsConstants.crashSnd.name);
-    this._santamove = game.add.audio(AssetsConstants.santaMoveSnd.name);
+    this._dropped = this._game.add.audio(AssetsConstants.droppedSnd.name);
+    this._delivered = this._game.add.audio(AssetsConstants.deliveredSnd.name);
+    this._crash = this._game.add.audio(AssetsConstants.crashSnd.name);
+    this._santamove = this._game.add.audio(AssetsConstants.santaMoveSnd.name);
 }
