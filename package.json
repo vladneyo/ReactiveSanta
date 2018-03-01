@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "build": "webpack",
-    "start": "webpack && node app.js",
+    "dev": "webpack | nodemon app.js --development",
+    "prod": "webpack | nodemon app.js --production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

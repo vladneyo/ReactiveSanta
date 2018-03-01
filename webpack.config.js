@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 
 const APP_ENTRY = './app/src/main.js';
+const isDev = process.env.NODE_ENV !== 'production';
 
 const webpackConfig = {
     entry: APP_ENTRY,
@@ -11,13 +12,15 @@ const webpackConfig = {
         filename: 'app.js',
     },
     optimization:{
-        minimize: false
+        minimize: isDev ? false: true
     },
     module: {
         rules: [
             { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" }
         ]
-    }
+    },
+    watch: isDev ? true : false,
+    mode: isDev ? 'development' : 'production'
 };
 
 
