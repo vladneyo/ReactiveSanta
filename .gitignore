@@ -1,2 +1,9 @@
-node_modules/
-app/dist/
+.vscode/
+
+be/rs/obj/
+be/rs/bin/
+be/rs/wwwroot/lib/
+
+fe/node_modules
+fe/dist
+fe/.parcel-cache
